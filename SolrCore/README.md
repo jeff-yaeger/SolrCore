@@ -12,6 +12,6 @@ builder.Services.AddSolrCore<TKey, TEntity>("YourSolrCoreName");
 //You do not have to add anything here. Defaults will be used if you don't want any custom behavior.
 builder.Services.AddSolr(typeof(YourCustomSerializer), typeof(YourCustomDefaultSetter));
 
-
+Check out https://github.com/jeff-yaeger/SolrCore to see how the web project is set up and for usage.
 
 see:https://www.nuget.org/packages/EbaSoft.SolrCore
