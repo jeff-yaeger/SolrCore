@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolrCoreWeb", "SolrCoreWeb\SolrCoreWeb.csproj", "{821BE1E6-577F-41BB-A425-CE97E05744FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolrCore", "SolrCore\SolrCore.csproj", "{07632FAC-191C-4D57-81E9-AF2AF4B6F163}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolrCoreTests", "SolrCoreTests\SolrCoreTests.csproj", "{A65CC8A0-B713-42B6-9684-1A0EEE93A8DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{821BE1E6-577F-41BB-A425-CE97E05744FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{821BE1E6-577F-41BB-A425-CE97E05744FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{821BE1E6-577F-41BB-A425-CE97E05744FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{821BE1E6-577F-41BB-A425-CE97E05744FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07632FAC-191C-4D57-81E9-AF2AF4B6F163}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07632FAC-191C-4D57-81E9-AF2AF4B6F163}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07632FAC-191C-4D57-81E9-AF2AF4B6F163}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07632FAC-191C-4D57-81E9-AF2AF4B6F163}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A65CC8A0-B713-42B6-9684-1A0EEE93A8DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A65CC8A0-B713-42B6-9684-1A0EEE93A8DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A65CC8A0-B713-42B6-9684-1A0EEE93A8DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A65CC8A0-B713-42B6-9684-1A0EEE93A8DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
