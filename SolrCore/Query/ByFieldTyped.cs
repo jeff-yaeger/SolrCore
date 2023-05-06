@@ -1,9 +1,10 @@
 namespace SolrCore.Query
 {
     using System;
+    using Models;
     using QueryBuilder;
 
-    public class ByField : Query, IQuote
+    public class ByField<T> : Query, IQuote where T : SolrEntity<T>
     {
         private readonly string _name;
         private readonly object _value;
@@ -16,7 +17,7 @@ namespace SolrCore.Query
                 throw new ArgumentNullException(name);
             }
 
-            _name = name;
+            _name = GetFieldName(name, SolrEntity<T>.Translations);
             _value = value;
         }
 
@@ -27,7 +28,7 @@ namespace SolrCore.Query
 
         public override string Render(Builder dto)
         {
-            return _quotes ? $"{GetFieldName(_name, dto.Translations)}:\"{_value}\"" : $"{GetFieldName(_name, dto.Translations)}:{_value}";
+            return _quotes ? $"{_name}:\"{_value}\"" : $"{_name}:{_value}";
         }
     }
 }

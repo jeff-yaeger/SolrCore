@@ -2,8 +2,8 @@ namespace SolrCore
 {
     using System;
     using Connection;
+    using EntityDefaults;
     using EntityModels;
-    using EntitySetter;
     using Microsoft.Extensions.DependencyInjection;
     using Models;
     using Repository;

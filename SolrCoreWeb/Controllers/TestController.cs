@@ -47,6 +47,42 @@ namespace SolrCoreWeb.Controllers
             return Ok(res);
         }
 
+        [HttpGet("GetParents")]
+        public async Task<IActionResult> GetParents()
+        {
+            var query = new QueryBuilder(
+                new Q(new ParentWhich(
+                        minusNestPath: new MinusNestPath(new Path()),
+                        plusNestPath: new PlusNestPath(
+                            new Path(Item.Translations[nameof(Item.Child)]),
+                            new ByRange<SolrChild>(nameof(SolrChild.Price), "15", "100"))
+                    )
+                )
+                , new Rows(10)
+            );
+
+            var res = await _solrRepository.GetAsync(query, true);
+            return Ok(res);
+        }
+
+        [HttpGet("GetChildren")]
+        public async Task<IActionResult> GetChildren()
+        {
+            var query = new QueryBuilder(
+                new Q(new ChildOf(
+                        minusNestPath: new MinusNestPath(new Path(Item.Translations[nameof(Item.Children)])),
+                        plusNestPath: new PlusNestPath(
+                            new Path(Item.Translations[nameof(Item.Children)]),
+                            new ByRange<SolrChild2>(nameof(SolrChild2.Price), "0", "30"))
+                    )
+                )
+                , new Rows(10)
+            );
+
+            var res = await _solrRepository.GetAsync(query, true);
+            return Ok(res);
+        }
+
         [HttpPost]
         public async Task<bool> Post(Item item)
         {

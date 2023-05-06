@@ -64,6 +64,10 @@ namespace SolrCore.Connection
                 throw new ArgumentNullException("Query cannot be null");
             }
 
+#if DEBUG
+            Console.WriteLine($"Query: {query}");
+#endif
+            
             var httpClient = GetClient();
 
             var requestUri = $"solr/{coreName}/select{query}";
@@ -83,7 +87,7 @@ namespace SolrCore.Connection
                     return await response.Content.ReadAsStringAsync();
                 }
 
-                return null;
+                return string.Empty;
             }
         }
 
