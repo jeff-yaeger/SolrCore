@@ -7,7 +7,6 @@ namespace SolrCore.Repository
     using Connection;
     using EntityDefaults;
     using EntityModels;
-    using EntitySetter;
     using Models;
     using Query;
     using QueryBuilder;
@@ -29,16 +28,16 @@ namespace SolrCore.Repository
             _entitySetter = entitySetter;
         }
 
-        public async Task<bool> AddAsync(T item)
+        public async Task<bool> AddAsync(T item, bool commit = true)
         {
             _entitySetter.Set<TKey>(new EntityTransaction { Entity = item, State = TransactionState.Add });
 
             await ConfirmIdNotInUse(item);
 
-            return await _solrConnection.PostAsync(_serializer.Serialize(new[] { item }), _coreName);
+            return await _solrConnection.PostAsync(_serializer.Serialize(new[] { item }), _coreName, commit);
         }
 
-        public async Task<bool> AddRangeAsync(IEnumerable<T> items)
+        public async Task<bool> AddRangeAsync(IEnumerable<T> items, bool commit = true)
         {
             _entitySetter.SetRange<TKey>(items.Select(entity =>
                 new EntityTransaction
@@ -49,16 +48,16 @@ namespace SolrCore.Repository
 
             await ConfirmIdsNotInUse(items);
 
-            return await _solrConnection.PostAsync(_serializer.Serialize(items), _coreName);
+            return await _solrConnection.PostAsync(_serializer.Serialize(items), _coreName, commit);
         }
 
-        public async Task<bool> UpdateAsync<TUpdate>(TUpdate item) where TUpdate : SolrEntity<TUpdate>, IEntity<TKey>
+        public async Task<bool> UpdateAsync<TUpdate>(TUpdate item, bool commit = true) where TUpdate : SolrEntity<TUpdate>, IEntity<TKey>
         {
             _entitySetter.Set<TKey>(new EntityTransaction { Entity = item, State = TransactionState.Update });
-            return await _solrConnection.PostAsync(_serializer.Serialize(new[] { item }), _coreName);
+            return await _solrConnection.PostAsync(_serializer.Serialize(new[] { item }), _coreName, commit);
         }
 
-        public async Task<bool> UpdateRangeAsync<TUpdate>(IEnumerable<TUpdate> items) where TUpdate : SolrEntity<TUpdate>, IEntity<TKey>
+        public async Task<bool> UpdateRangeAsync<TUpdate>(IEnumerable<TUpdate> items, bool commit = true) where TUpdate : SolrEntity<TUpdate>, IEntity<TKey>
         {
             _entitySetter.SetRange<TKey>(items.Select(entity =>
                 new EntityTransaction
@@ -67,43 +66,43 @@ namespace SolrCore.Repository
                     State = TransactionState.Update
                 }));
 
-            return await _solrConnection.PostAsync(_serializer.Serialize(items), _coreName);
+            return await _solrConnection.PostAsync(_serializer.Serialize(items), _coreName, commit);
         }
 
-        public async Task<SolrResponse<T>> GetAsync(IQuery query)
+        public async Task<SolrResponse<T>> GetAsync(IQuery query, bool ignoreDefaultQueries = false)
         {
-            var rendered = query.Render(new Builder(SolrEntity<T>.Translations, SolrEntity<T>.DefaultQueries));
+            var rendered = query.Render(new Builder(SolrEntity<T>.Translations, SolrEntity<T>.DefaultQueries, ignoreDefaultQueries));
             var responseContent = await _solrConnection.GetAsync(rendered, _coreName);
-            return _serializer.Deserialize<SolrResponse<T>>(responseContent);
+            return string.IsNullOrEmpty(responseContent) ? new SolrResponse<T>() : _serializer.Deserialize<SolrResponse<T>>(responseContent);
         }
 
-        public async Task<bool> DeleteAllAsync<TDelete>() where TDelete : SolrEntity<TDelete>, IEntity<TKey>
+        public async Task<bool> DeleteAllAsync<TDelete>(bool commit = true) where TDelete : SolrEntity<TDelete>, IEntity<TKey>
         {
             if (typeof(ISoftDelete).IsAssignableFrom(typeof(TDelete)) || typeof(IOnDelete<TKey>).IsAssignableFrom(typeof(TDelete)))
             {
                 var queryBuilder = new QueryBuilder(
                     new Q(new AllQuery()),
                     new FL(new Fields("id")));
-
+            
                 var rendered = queryBuilder.Render(new Builder(SolrEntity<TDelete>.Translations, SolrEntity<TDelete>.DefaultQueries));
                 var responseContent = await _solrConnection.GetAsync(rendered, _coreName);
                 var response = _serializer.Deserialize<SolrResponse<TDelete>>(responseContent);
-
+            
                 _entitySetter.SetRange<TKey>(response.Response.Docs.Select(entity =>
                     new EntityTransaction
                     {
                         Entity = entity,
                         State = TransactionState.Delete
                     }));
-
-                return await _solrConnection.PostAsync(_serializer.Serialize(response.Response.Docs), _coreName);
+            
+                return await _solrConnection.PostAsync(_serializer.Serialize(response.Response.Docs), _coreName, commit);
             }
 
             var serialize = GetDeleteQuery("*:*");
-            return await _solrConnection.PostAsync(serialize, _coreName);
+            return await _solrConnection.PostAsync(serialize, _coreName, commit);
         }
 
-        public async Task<bool> DeleteAsync<TDelete>(TKey id) where TDelete : class, IEntity<TKey>, new()
+        public async Task<bool> DeleteAsync<TDelete>(TKey id, bool commit = true) where TDelete : class, IEntity<TKey>, new()
         {
             if (typeof(ISoftDelete).IsAssignableFrom(typeof(TDelete)) || typeof(IOnDelete<TKey>).IsAssignableFrom(typeof(TDelete)))
             {
@@ -113,37 +112,37 @@ namespace SolrCore.Repository
                 };
 
                 _entitySetter.Set<TKey>(new EntityTransaction { Entity = delete, State = TransactionState.Delete });
-                return await _solrConnection.PostAsync(_serializer.Serialize(new[] { delete }), _coreName);
+                return await _solrConnection.PostAsync(_serializer.Serialize(new[] { delete }), _coreName, commit);
             }
 
             var serialize = GetDeleteQuery(new ByField("id", id).Render(new Builder(SolrEntity<T>.Translations, SolrEntity<T>.DefaultQueries)));
-            return await _solrConnection.PostAsync(serialize, _coreName);
+            return await _solrConnection.PostAsync(serialize, _coreName, commit);
         }
 
-        public async Task<bool> DeleteAsync<TDelete>(Query query) where TDelete : SolrEntity<TDelete>, IEntity<TKey>
+        public async Task<bool> DeleteAsync<TDelete>(Query query, bool commit = true) where TDelete : SolrEntity<TDelete>, IEntity<TKey>
         {
             if (typeof(ISoftDelete).IsAssignableFrom(typeof(TDelete)) || typeof(IOnDelete<TKey>).IsAssignableFrom(typeof(TDelete)))
             {
                 var queryBuilder = new QueryBuilder(
                     new Q(query),
                     new FL(new Fields("id")));
-
+            
                 var rendered = queryBuilder.Render(new Builder(SolrEntity<TDelete>.Translations, SolrEntity<TDelete>.DefaultQueries));
                 var responseContent = await _solrConnection.GetAsync(rendered, _coreName);
                 var response = _serializer.Deserialize<SolrResponse<TDelete>>(responseContent);
-
+            
                 _entitySetter.SetRange<TKey>(response.Response.Docs.Select(entity =>
                     new EntityTransaction
                     {
                         Entity = entity,
                         State = TransactionState.Delete
                     }));
-
-                return await _solrConnection.PostAsync(_serializer.Serialize(response.Response.Docs), _coreName);
+            
+                return await _solrConnection.PostAsync(_serializer.Serialize(response.Response.Docs), _coreName, commit);
             }
 
             var serialize = GetDeleteQuery(query.Render(new Builder(SolrEntity<T>.Translations, SolrEntity<T>.DefaultQueries)));
-            return await _solrConnection.PostAsync(serialize, _coreName);
+            return await _solrConnection.PostAsync(serialize, _coreName, commit);
         }
 
         public static void SetCoreName(string coreName)

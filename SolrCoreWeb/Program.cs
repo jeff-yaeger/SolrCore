@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SolrCore;
-using SolrCore.Serializer;
 using SolrCoreWeb.Data;
 using SolrCoreWeb.Managers;
 using SolrCoreWeb.Models;
@@ -82,7 +81,6 @@ builder.Services.AddHttpClient("SolrCore", httpClient => { httpClient.BaseAddres
 builder.Services.AddSingleton<ITokenManager, TokenManager>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSolrCore<string, Item>("test");
-builder.Services.AddSolr(typeof(SolrSerializer), typeof(EntitySetter));
 builder.Services.AddSolr(setter: typeof(EntitySetter));
 
 var app = builder.Build();

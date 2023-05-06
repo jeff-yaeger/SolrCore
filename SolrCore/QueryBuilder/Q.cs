@@ -17,7 +17,7 @@ namespace SolrCore.QueryBuilder
         public override void Build(Builder dto)
         {
             dto.Sb.Append("q=");
-            if (dto.DefaultQueries != null && dto.DefaultQueries.Count > 0)
+            if (!dto.IgnoreDefaultQueries && dto.DefaultQueries != null && dto.DefaultQueries.Count > 0)
             {
                 var newQuery = _query;
                 foreach (var defaultQuery in dto.DefaultQueries)

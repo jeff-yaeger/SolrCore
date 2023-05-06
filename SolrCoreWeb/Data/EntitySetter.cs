@@ -3,7 +3,6 @@ namespace SolrCoreWeb.Data
     using System.Security.Claims;
     using EntityDefaults;
     using EntityModels;
-    using SolrCore.EntitySetter;
 
     public class EntitySetter : IEntitySetter
     {
@@ -19,7 +18,7 @@ namespace SolrCoreWeb.Data
             var id = GetCurrentUsersId<TKey>();
             if (entityTransaction.Entity is IOnAdd<TKey> or IOnUpdate<TKey> or IOnDelete<TKey>)
             {
-                SetDefaults(entityTransaction, id);
+                entityTransaction.SetDefaults(id);
             }
             else
             {
@@ -36,7 +35,7 @@ namespace SolrCoreWeb.Data
             {
                 if (entityTransaction.Entity is IOnAdd<TKey> or IOnUpdate<TKey> or IOnDelete<TKey>)
                 {
-                    SetDefaults(entityTransaction, id);
+                    entityTransaction.SetDefaults(id);
                 }
                 else
                 {
@@ -57,24 +56,6 @@ namespace SolrCoreWeb.Data
                 new NormalizeNameSetter()
             };
             return defaultDataSetters;
-        }
-
-        private static void SetDefaults<TKey>(EntityTransaction entityTransaction, TKey id) where TKey : IEquatable<TKey>
-        {
-            if (entityTransaction.State == TransactionState.Add && entityTransaction.Entity is IOnAdd<TKey> addEntity)
-            {
-                addEntity.OnAdd(id);
-            }
-
-            if (entityTransaction.State == TransactionState.Update && entityTransaction.Entity is IOnUpdate<TKey> updateEntity)
-            {
-                updateEntity.OnUpdate(id);
-            }
-
-            if (entityTransaction.State == TransactionState.Delete && entityTransaction.Entity is IOnDelete<TKey> deleteEntity)
-            {
-                deleteEntity.OnDelete(id);
-            }
         }
 
         private static void SetDefaults(EntityTransaction entityTransaction, IEnumerable<IDefaultEntitySetter> defaultDataSetters)

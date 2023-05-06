@@ -1,16 +1,26 @@
 namespace SolrCore.QueryBuilder
 {
+    using System.Collections.Generic;
     using SolrCore.Query;
 
     public class FL : Query
     {
-        private readonly Fields _fields;
-        private readonly IQuery[] _queries;
+        private readonly FieldsBase _fields;
+        private readonly IList<IQuery> _queries = new List<IQuery>();
 
-        public FL(Fields fields = null, params IQuery[] queries)
+        public FL(params IQuery[] queries)
         {
-            _fields = fields;
-            _queries = queries;
+            foreach (var query in queries)
+            {
+                if (_fields == null && query is FieldsBase fieldsBase)
+                {
+                    _fields = fieldsBase;
+                }
+                else
+                {
+                    _queries.Add(query);
+                }
+            }
         }
 
         public override string Render(Builder dto)
@@ -30,13 +40,13 @@ namespace SolrCore.QueryBuilder
                 dto.Sb.Append('*');
             }
 
-            if (_queries != null && _queries.Length > 0)
+            if (_queries != null && _queries.Count > 0)
             {
                 dto.Sb.Append(',');
-                for (var i = 0; i < _queries.Length; i++)
+                for (var i = 0; i < _queries.Count; i++)
                 {
                     _queries[i].Build(dto);
-                    if (i != _queries.Length - 1)
+                    if (i != _queries.Count - 1)
                     {
                         dto.Sb.Append(',');
                     }

@@ -2,13 +2,11 @@ namespace SolrCore.QueryBuilder
 {
     using System;
 
-    public class Fields : Query
+    public class Fields : FieldsBase
     {
-        private readonly string[] _names;
-
         public Fields(params string[] names)
         {
-            _names = names ?? throw new ArgumentNullException(nameof(names));
+            Names = names ?? throw new ArgumentNullException(nameof(names));
         }
 
         public override string Render(Builder dto)
@@ -18,12 +16,12 @@ namespace SolrCore.QueryBuilder
 
         public override void Build(Builder dto)
         {
-            for (var i = 0; i < _names.Length; i++)
+            for (var i = 0; i < Names.Length; i++)
             {
-                _names[i] = GetFieldName(_names[i], dto.Translations);
+                Names[i] = GetFieldName(Names[i], dto.Translations);
             }
 
-            dto.Sb.Append($"{string.Join(",", _names)}");
+            dto.Sb.Append($"{string.Join(",", Names)}");
         }
     }
 }

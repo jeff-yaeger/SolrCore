@@ -20,6 +20,11 @@ namespace SolrCore.QueryBuilder
         {
             foreach (var query in _queries)
             {
+                if (query is IQuote quote)
+                {
+                    quote.AddQuotes();
+                }
+
                 query.Build(dto);
             }
         }
