@@ -81,6 +81,7 @@ builder.Services.AddHttpClient("SolrCore", httpClient => { httpClient.BaseAddres
 builder.Services.AddSingleton<ITokenManager, TokenManager>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSolrCore<string, Item>("test");
+builder.Services.AddSolrCore<string, OtherItem>("other_test", false);
 builder.Services.AddSolr(setter: typeof(EntitySetter));
 
 var app = builder.Build();

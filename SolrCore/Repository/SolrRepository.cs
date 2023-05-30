@@ -15,6 +15,7 @@ namespace SolrCore.Repository
     public class SolrRepository<TKey, T> : ISolrRepository<TKey, T> where T : class, IEntity<TKey>, ISolrId where TKey : IEquatable<TKey>
     {
         private static string _coreName;
+        private static bool _useOverwriteProtection;
         private readonly IEntitySetter _entitySetter;
         private readonly ISolrSerializer _serializer;
         private readonly ISolrConnection _solrConnection;
@@ -32,7 +33,10 @@ namespace SolrCore.Repository
         {
             _entitySetter.Set<TKey>(new EntityTransaction { Entity = item, State = TransactionState.Add });
 
-            await ConfirmIdNotInUse(item);
+            if (_useOverwriteProtection)
+            {
+                await ConfirmIdNotInUse(item);
+            }
 
             return await _solrConnection.PostAsync(_serializer.Serialize(new[] { item }), _coreName, commit);
         }
@@ -46,7 +50,10 @@ namespace SolrCore.Repository
                     State = TransactionState.Add
                 }));
 
-            await ConfirmIdsNotInUse(items);
+            if (_useOverwriteProtection)
+            {
+                await ConfirmIdsNotInUse(items);
+            }
 
             return await _solrConnection.PostAsync(_serializer.Serialize(items), _coreName, commit);
         }
@@ -83,18 +90,18 @@ namespace SolrCore.Repository
                 var queryBuilder = new QueryBuilder(
                     new Q(new AllQuery()),
                     new FL(new Fields("id")));
-            
+
                 var rendered = queryBuilder.Render(new Builder(SolrEntity<TDelete>.Translations, SolrEntity<TDelete>.DefaultQueries));
                 var responseContent = await _solrConnection.GetAsync(rendered, _coreName);
                 var response = _serializer.Deserialize<SolrResponse<TDelete>>(responseContent);
-            
+
                 _entitySetter.SetRange<TKey>(response.Response.Docs.Select(entity =>
                     new EntityTransaction
                     {
                         Entity = entity,
                         State = TransactionState.Delete
                     }));
-            
+
                 return await _solrConnection.PostAsync(_serializer.Serialize(response.Response.Docs), _coreName, commit);
             }
 
@@ -126,18 +133,18 @@ namespace SolrCore.Repository
                 var queryBuilder = new QueryBuilder(
                     new Q(query),
                     new FL(new Fields("id")));
-            
+
                 var rendered = queryBuilder.Render(new Builder(SolrEntity<TDelete>.Translations, SolrEntity<TDelete>.DefaultQueries));
                 var responseContent = await _solrConnection.GetAsync(rendered, _coreName);
                 var response = _serializer.Deserialize<SolrResponse<TDelete>>(responseContent);
-            
+
                 _entitySetter.SetRange<TKey>(response.Response.Docs.Select(entity =>
                     new EntityTransaction
                     {
                         Entity = entity,
                         State = TransactionState.Delete
                     }));
-            
+
                 return await _solrConnection.PostAsync(_serializer.Serialize(response.Response.Docs), _coreName, commit);
             }
 
@@ -148,6 +155,11 @@ namespace SolrCore.Repository
         public static void SetCoreName(string coreName)
         {
             _coreName = coreName;
+        }
+
+        public static void SetOverwriteProtection(bool useOverwriteProtection)
+        {
+            _useOverwriteProtection = useOverwriteProtection;
         }
 
         private string GetDeleteQuery(string query)

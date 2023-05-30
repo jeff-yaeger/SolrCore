@@ -11,10 +11,11 @@ namespace SolrCore
 
     public static class Extensions
     {
-        public static void AddSolrCore<TKey, T>(this IServiceCollection serviceCollection, string coreName) where T : class, IEntity<TKey>, ISolrId where TKey : IEquatable<TKey>
+        public static void AddSolrCore<TKey, T>(this IServiceCollection serviceCollection, string coreName, bool useOverwriteProtection = true) where T : class, IEntity<TKey>, ISolrId where TKey : IEquatable<TKey>
         {
             serviceCollection.AddSingleton<ISolrRepository<TKey, T>, SolrRepository<TKey, T>>();
             SolrRepository<TKey, T>.SetCoreName(coreName);
+            SolrRepository<TKey, T>.SetOverwriteProtection(useOverwriteProtection);
         }
 
         public static void AddSolr(this IServiceCollection serviceCollection, Type serializer = null, Type setter = null)

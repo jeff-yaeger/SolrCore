@@ -21,6 +21,15 @@ see:https://www.nuget.org/packages/EbaSoft.SolrCore
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/27173723-bc9258dd-27eb-4c39-9b2b-c33cae354883?action=collection%2Ffork&collection-url=entityId%3D27173723-bc9258dd-27eb-4c39-9b2b-c33cae354883%26entityType%3Dcollection%26workspaceId%3Ddceebdce-605e-4c97-82d4-4415b2d0d34b#?env%5BDevelopment%5D=W3sia2V5IjoidXJsIiwidmFsdWUiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJlbmFibGVkIjp0cnVlLCJ0eXBlIjoiZGVmYXVsdCIsInNlc3Npb25WYWx1ZSI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsInNlc3Npb25JbmRleCI6MH0seyJrZXkiOiJ0b2tlbiIsInZhbHVlIjoiYXNvYXNqZGZpODkwNzIzNHEwOTh1aXdxZWZyIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6InNlY3JldCIsInNlc3Npb25WYWx1ZSI6ImFzb2FzamRmaTg5MDcyMzRxMDk4dWl3cWVmciIsInNlc3Npb25JbmRleCI6MX1d)
 
 Changes:
+
+v1.0.10 -
+
+Added optional checking for duplicate ids.
+
+Changed Translations dictionary to concurrent.
+
+Added test controllers for IOnAdd<> types.
+
 v1.0.9 -
 
 Added Parent Which and Child Of Solr queries.
