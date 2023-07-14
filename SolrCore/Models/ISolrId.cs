@@ -1,6 +1,9 @@
 namespace SolrCore.Models
 {
-    public interface ISolrId
+    using System;
+    using EntityModels;
+
+    public interface ISolrId<TKey>:IEntity<TKey> where TKey:IEquatable<TKey>
     {
         void NewId();
     }

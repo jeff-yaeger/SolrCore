@@ -3,7 +3,7 @@ namespace SolrCoreWeb.Models
     using EntityModels;
     using SolrCore.Models;
 
-    public class OtherItem : SolrEntity<OtherItem>, IEntity<string>, IOnAdd<string>, ISolrId
+    public class OtherItem : SolrEntity<OtherItem>, IOnAdd<string>, ISolrId<string>
     {
         static OtherItem()
         {
