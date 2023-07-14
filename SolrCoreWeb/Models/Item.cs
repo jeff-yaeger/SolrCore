@@ -5,7 +5,7 @@ namespace SolrCoreWeb.Models
     using SolrCore.Models;
 
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class Item : SolrEntity<Item>, IEntity<string>, IName, ICreated<string>, ILastUpdated<string>, ISolrId, ISoftDelete
+    public class Item : SolrEntity<Item>, IName, ICreated<string>, ILastUpdated<string>, ISolrId<string>, ISoftDelete
     {
         static Item()
         {
@@ -71,7 +71,7 @@ namespace SolrCoreWeb.Models
         }
     }
 
-    public class SolrChild : SolrEntity<SolrChild>, IEntity<string>, ISolrId
+    public class SolrChild : SolrEntity<SolrChild>, ISolrId<string>
     {
         [SolrFieldName("type_i")]
         public int? Type { get; set; }
@@ -91,7 +91,7 @@ namespace SolrCoreWeb.Models
         }
     }
 
-    public class SolrChild2 : SolrEntity<SolrChild2>, IEntity<string>, ISolrId
+    public class SolrChild2 : SolrEntity<SolrChild2>, ISolrId<string>
     {
         [SolrFieldName("type_i")]
         public int? Type { get; set; }
@@ -115,7 +115,7 @@ namespace SolrCoreWeb.Models
         }
     }
 
-    public class SolrChild3 : SolrEntity<SolrChild3>, IEntity<string>, ISolrId
+    public class SolrChild3 : SolrEntity<SolrChild3>, ISolrId<string>
     {
         [SolrFieldName("child")]
         public SolrChild? Child { get; set; }

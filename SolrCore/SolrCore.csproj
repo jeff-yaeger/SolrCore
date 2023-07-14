@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>Ebasoft.SolrCore</PackageId>
-        <Version>1.0.9</Version>
+        <Version>1.0.10</Version>
         <Authors>Ebasoft</Authors>
         <Company>Ebasoft</Company>
         <Product>SolrCore</Product>
@@ -12,11 +12,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="EbaSoft.EntityDefaults" Version="1.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-        <PackageReference Include="System.Text.Json" Version="7.0.2"/>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
+        <PackageReference Include="EbaSoft.EntityDefaults" Version="1.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="System.Text.Json" Version="7.0.2" />
+        <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>

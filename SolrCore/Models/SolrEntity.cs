@@ -1,5 +1,6 @@
 ﻿namespace SolrCore.Models
 {
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
@@ -14,9 +15,9 @@
 
         static SolrEntity()
         {
-            Translations = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            Translations = new ConcurrentDictionary<string, string>(typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.GetCustomAttribute(typeof(SolrFieldNameAttribute)) != null)
-                .ToDictionary(x => x.Name, x => ((SolrFieldNameAttribute)x.GetCustomAttribute(typeof(SolrFieldNameAttribute))).Name);
+                .ToDictionary(x => x.Name, x => ((SolrFieldNameAttribute)x.GetCustomAttribute(typeof(SolrFieldNameAttribute))).Name));
         }
 
         protected static void SetStandardDefaults()
