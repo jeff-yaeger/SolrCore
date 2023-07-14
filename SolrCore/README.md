@@ -30,6 +30,10 @@ Changed Translations dictionary to concurrent.
 
 Added test controllers for IOnAdd<> types.
 
+Made repository more generic for expanded use.
+
+Fixed delete to work with items that have children. 
+
 v1.0.9 -
 
 Added Parent Which and Child Of Solr queries.
